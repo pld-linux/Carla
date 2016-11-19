@@ -1,0 +1,17 @@
+diff -dur -x '*~' Carla-1.9.6.orig/source/Makefile.mk Carla-1.9.6/source/Makefile.mk
+--- Carla-1.9.6.orig/source/Makefile.mk	2016-11-19 20:11:33.078371108 +0100
++++ Carla-1.9.6/source/Makefile.mk	2016-11-19 20:13:06.552678530 +0100
+@@ -265,10 +265,10 @@
+ # --------------------------------------------------------------
+ # Set default Qt used in frontend
+ 
+-ifeq ($(HAVE_PYQT4),true)
+-DEFAULT_QT ?= 4
+-else
++ifeq ($(HAVE_PYQT5),true)
+ DEFAULT_QT ?= 5
++else
++DEFAULT_QT ?= 4
+ endif
+ 
+ # --------------------------------------------------------------

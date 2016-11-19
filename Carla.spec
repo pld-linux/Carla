@@ -1,7 +1,6 @@
 #
 # Conditional build:
-%bcond_with	tests		# build with tests
-%bcond_without	tests		# build without tests
+%bcond_with	default_qt5	# Use Qt5 by default (disables VST plugin)
 #
 
 # git tag is 1.9.6, but release name is 2.0-beta4
@@ -20,6 +19,7 @@ Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
 Patch0:		libdir.patch
 Patch1:		pyqt5.5.patch
 Patch2:		shared_fltk.patch
+Patch3:		default_qt5.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
 BuildRequires:	QtCore-devel
@@ -34,16 +34,22 @@ BuildRequires:	gtk+3-devel
 BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
 BuildRequires:	pulseaudio-devel
-BuildRequires:	python-PyQt5-devel-tools
 BuildRequires:	python3
-BuildRequires:	python3-PyQt5-uic
 BuildRequires:	rpm-pythonprov
+%if %{with default_qt5}
+BuildRequires:	python-PyQt5-devel-tools
+BuildRequires:	python3-PyQt5-uic
 Requires:	python3-PyQt5
+%else
+BuildRequires:	python-PyQt4-devel-tools
+BuildRequires:	python3-PyQt4-uic >= 4.11.4-4
+Requires:	python3-PyQt4
+%endif
 Requires:	python3-numpy
 Suggests:	python3-rdflib
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_noautoprovfiles	%{_libdir}/lv2
+%define	_noautoprovfiles	%{_libdir}/(lv2|vst)
 
 %description
 Carla is a fully-featured audio plugin host, with support for many
@@ -64,7 +70,7 @@ Pliki nagłówkowe biblioteki %{name}.
 %setup -q -n %{name}-%{tag}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+%{?with_default_qt5:%patch2 -p1}
 
 %build
 %{__make} -j1 \
@@ -74,6 +80,13 @@ Pliki nagłówkowe biblioteki %{name}.
 	CXXFLAGS="%{rpmcxxflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	PREFIX=%{_prefix} \
+	PYUIC4=/usr/bin/pyuic4-3 \
+	PYUIC5=/usr/bin/pyuic5-3 \
+%if %{with default_qt5}
+	PYUIC=/usr/bin/pyuic5-3 \
+%else
+	PYUIC=/usr/bin/pyuic4-3 -w \
+%endif
 	LIBDIR=%{_libdir}
 
 %install
@@ -110,6 +123,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/lv2/carla.lv2/*.so
 %{_libdir}/lv2/carla.lv2/resources
 %{_libdir}/lv2/carla.lv2/styles
+%if %{without default_qt5}
+%dir %{_libdir}/vst
+%dir %{_libdir}/vst/carla.vst
+%attr(755,root,root) %{_libdir}/vst/carla.vst/*.so
+%{_libdir}/vst/carla.vst/resources
+%{_libdir}/vst/carla.vst/styles
+%endif
 %{_desktopdir}/carla.desktop
 %dir %{_datadir}/carla
 %dir %{_datadir}/carla/resources
