@@ -19,6 +19,7 @@ Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
 # Source0-md5:	43e27bd3e1fe226e078ca1b90ea49426
 Patch0:		libdir.patch
 Patch1:		pyqt5.5.patch
+Patch2:		shared_fltk.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
 BuildRequires:	QtCore-devel
@@ -63,6 +64,7 @@ Pliki nagłówkowe biblioteki %{name}.
 %setup -q -n %{name}-%{tag}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__make} -j1 \

@@ -1,0 +1,12 @@
+diff -dur -x '*~' Carla-1.9.6.orig/source/Makefile.mk Carla-1.9.6/source/Makefile.mk
+--- Carla-1.9.6.orig/source/Makefile.mk	2015-03-12 14:09:14.000000000 +0100
++++ Carla-1.9.6/source/Makefile.mk	2016-11-19 19:09:02.314090565 +0100
+@@ -426,7 +426,7 @@
+ ifeq ($(HAVE_NTK),true)
+ NATIVE_PLUGINS_LIBS  += $(shell pkg-config --libs ntk_images ntk)
+ else
+-NATIVE_PLUGINS_LIBS  += $(shell fltk-config --use-images --ldstaticflags)
++NATIVE_PLUGINS_LIBS  += $(shell fltk-config --use-images --ldflags)
+ endif
+ endif
+ endif
