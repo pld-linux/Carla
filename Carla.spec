@@ -54,7 +54,7 @@ Pliki nagłówkowe biblioteki %{name}.
 %patch1 -p1
 
 %build
-%{__make} \
+%{__make} -j1 \
 	PREFIX=%{_prefix} \
 	LIBDIR=%{_libdir}
 
