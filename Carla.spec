@@ -68,6 +68,11 @@ Pliki nagłówkowe biblioteki %{name}.
 
 %build
 %{__make} -j1 \
+	CC="%{__cc}" \
+	CXX="%{__cxx}" \
+	CFLAGS="%{rpmcflags}" \
+	CXXFLAGS="%{rpmcxxflags}" \
+	LDFLAGS="%{rpmldflags}" \
 	PREFIX=%{_prefix} \
 	LIBDIR=%{_libdir}
 
