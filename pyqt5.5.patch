@@ -1,0 +1,51 @@
+diff -dur -x '*~' Carla-1.9.6.orig/source/carla_control.py Carla-1.9.6/source/carla_control.py
+--- Carla-1.9.6.orig/source/carla_control.py	2015-03-12 14:09:14.000000000 +0100
++++ Carla-1.9.6/source/carla_control.py	2016-11-19 14:05:16.290161277 +0100
+@@ -935,7 +935,7 @@
+ 
+     def loadSettings(self):
+         settings = QSettings()
+-        self.restoreGeometry(settings.value("Geometry", ""))
++        self.restoreGeometry(settings.value("Geometry", b""))
+ 
+         #showToolbar = settings.value("ShowToolbar", True, type=bool)
+         #self.ui.act_settings_show_toolbar.setChecked(showToolbar)
+diff -dur -x '*~' Carla-1.9.6.orig/source/carla_database.py Carla-1.9.6/source/carla_database.py
+--- Carla-1.9.6.orig/source/carla_database.py	2015-03-12 14:09:14.000000000 +0100
++++ Carla-1.9.6/source/carla_database.py	2016-11-19 14:06:07.430621741 +0100
+@@ -1250,8 +1250,8 @@
+ 
+     def loadSettings(self):
+         settings = QSettings("falkTX", "CarlaDatabase2")
+-        self.restoreGeometry(settings.value("PluginDatabase/Geometry", ""))
+-        self.ui.tableWidget.horizontalHeader().restoreState(settings.value("PluginDatabase/TableGeometry%s" % ("_5" if config_UseQt5 else "_4"), ""))
++        self.restoreGeometry(settings.value("PluginDatabase/Geometry", b""))
++        self.ui.tableWidget.horizontalHeader().restoreState(settings.value("PluginDatabase/TableGeometry%s" % ("_5" if config_UseQt5 else "_4"), b""))
+         self.ui.ch_effects.setChecked(settings.value("PluginDatabase/ShowEffects", True, type=bool))
+         self.ui.ch_instruments.setChecked(settings.value("PluginDatabase/ShowInstruments", True, type=bool))
+         self.ui.ch_midi.setChecked(settings.value("PluginDatabase/ShowMIDI", True, type=bool))
+diff -dur -x '*~' Carla-1.9.6.orig/source/carla_host.py Carla-1.9.6/source/carla_host.py
+--- Carla-1.9.6.orig/source/carla_host.py	2015-03-12 14:09:14.000000000 +0100
++++ Carla-1.9.6/source/carla_host.py	2016-11-19 14:06:19.117392013 +0100
+@@ -1271,10 +1271,10 @@
+         settings = QSettings()
+ 
+         if firstTime:
+-            self.restoreGeometry(settings.value("Geometry", ""))
++            self.restoreGeometry(settings.value("Geometry", b""))
+ 
+             if not self.host.isPlugin:
+-                self.ui.panelTime.restoreGeometry(settings.value("TimePanelGeometry", ""))
++                self.ui.panelTime.restoreGeometry(settings.value("TimePanelGeometry", b""))
+ 
+                 showTimePanel = settings.value("ShowTimePanel", True, type=bool)
+                 self.ui.act_settings_show_time_panel.setChecked(showTimePanel)
+@@ -1791,7 +1791,7 @@
+ 
+         # set our gui as parent for all plugins UIs
+         if not self.host.isPlugin:
+-            winIdStr = "%x" % self.winId()
++            winIdStr = "%x" % int(self.winId())
+             self.host.set_engine_option(ENGINE_OPTION_FRONTEND_WIN_ID, 0, winIdStr)
+ 
+     def hideEvent(self, event):
