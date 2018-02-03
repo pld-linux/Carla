@@ -1,13 +1,8 @@
-#
-# Conditional build:
-%bcond_with	default_qt5	# Use Qt5 by default (disables VST plugin)
-#
+# git tag is 1.9.8, but release name is 2.0-beta6
+# https://github.com/falkTX/Carla/releases/tag/1.9.8
+%define	tag	1.9.8
 
-# git tag is 1.9.6, but release name is 2.0-beta4
-# https://github.com/falkTX/Carla/releases/tag/1.9.6
-%define	tag	1.9.6
-
-%define	beta	beta4
+%define	beta	beta6
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0
@@ -15,41 +10,35 @@ Release:	0.%{beta}.1
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
-# Source0-md5:	43e27bd3e1fe226e078ca1b90ea49426
-Patch0:		libdir.patch
-Patch1:		pyqt5.5.patch
-Patch2:		shared_fltk.patch
-Patch3:		default_qt5.patch
+# Source0-md5:	279acb33716327c82516d6edb8ff6d13
+Patch0:		pypkgdir.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
-BuildRequires:	QtCore-devel
-BuildRequires:	QtGui-devel
 BuildRequires:	Qt5Core-devel
 BuildRequires:	Qt5Gui-devel
+BuildRequires:	QtCore-devel
+BuildRequires:	QtGui-devel
 BuildRequires:	alsa-lib-devel
+BuildRequires:	fftw3-devel
 BuildRequires:	fltk-devel
 BuildRequires:	fluidsynth-devel
 BuildRequires:	gtk+2-devel
 BuildRequires:	gtk+3-devel
 BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
+BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
-BuildRequires:	python3
-BuildRequires:	rpm-pythonprov
-%if %{with default_qt5}
 BuildRequires:	python-PyQt5-devel-tools
+BuildRequires:	python3
 BuildRequires:	python3-PyQt5-uic
+BuildRequires:	rpm-pythonprov
+BuildRequires:	zlib-devel
 Requires:	python3-PyQt5
-%else
-BuildRequires:	python-PyQt4-devel-tools
-BuildRequires:	python3-PyQt4-uic >= 4.11.4-4
-Requires:	python3-PyQt4
-%endif
 Requires:	python3-numpy
 Suggests:	python3-rdflib
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_noautoprovfiles	%{_libdir}/(lv2|vst)
+%define	_noautoprovfiles	%{_libdir}/(lv2|vst|carla/jack/libjack.so)
 
 %description
 Carla is a fully-featured audio plugin host, with support for many
@@ -68,9 +57,8 @@ Pliki nagłówkowe biblioteki %{name}.
 
 %prep
 %setup -q -n %{name}-%{tag}
+
 %patch0 -p1
-%patch1 -p1
-%{?with_default_qt5:%patch2 -p1}
 
 %build
 %{__make} -j1 \
@@ -80,13 +68,9 @@ Pliki nagłówkowe biblioteki %{name}.
 	CXXFLAGS="%{rpmcxxflags}" \
 	LDFLAGS="%{rpmldflags}" \
 	PREFIX=%{_prefix} \
-	PYUIC4=/usr/bin/pyuic4-3 \
-	PYUIC5=/usr/bin/pyuic5-3 \
-%if %{with default_qt5}
-	PYUIC=/usr/bin/pyuic5-3 \
-%else
-	PYUIC=/usr/bin/pyuic4-3 -w \
-%endif
+	PYUIC4=%{_bindir}/pyuic4-3 \
+	PYUIC5=%{_bindir}/pyuic5-3 \
+	PYUIC=%{_bindir}/pyuic5-3 \
 	LIBDIR=%{_libdir}
 
 %install
@@ -95,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	PREFIX=%{_prefix} \
 	LIBDIR=%{_libdir} \
+	PYPKGDIR=%{py3_sitescriptdir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__sed} -i -e '1s,^#!.*python3\?,#!%{__python3},' \
@@ -118,31 +103,42 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/carla/styles/carlastyle.so
 %attr(755,root,root) %{_libdir}/carla/carla-*
 %attr(755,root,root) %{_libdir}/carla/libcarla*.so
+%dir %{_libdir}/carla/jack
+%attr(755,root,root) %{_libdir}/carla/jack/libjack.so.0
 %dir %{_libdir}/lv2/carla.lv2
 %{_libdir}/lv2/carla.lv2/*.ttl
 %attr(755,root,root) %{_libdir}/lv2/carla.lv2/*.so
+%attr(755,root,root) %{_libdir}/lv2/carla.lv2/carla-bridge-lv2-*
+%attr(755,root,root) %{_libdir}/lv2/carla.lv2/carla-bridge-native
+%attr(755,root,root) %{_libdir}/lv2/carla.lv2/carla-discovery-native
+%{_libdir}/lv2/carla.lv2/jack
 %{_libdir}/lv2/carla.lv2/resources
 %{_libdir}/lv2/carla.lv2/styles
-%if %{without default_qt5}
 %dir %{_libdir}/vst
 %dir %{_libdir}/vst/carla.vst
 %attr(755,root,root) %{_libdir}/vst/carla.vst/*.so
+%attr(755,root,root) %{_libdir}/vst/carla.vst/carla-bridge-lv2-*
+%attr(755,root,root) %{_libdir}/vst/carla.vst/carla-bridge-native
+%attr(755,root,root) %{_libdir}/vst/carla.vst/carla-discovery-native
+%{_libdir}/vst/carla.vst/jack
 %{_libdir}/vst/carla.vst/resources
 %{_libdir}/vst/carla.vst/styles
-%endif
 %{_desktopdir}/carla.desktop
+%{_desktopdir}/carla-control.desktop
 %dir %{_datadir}/carla
 %dir %{_datadir}/carla/resources
-%{_datadir}/carla/resources/nekofilter
 %{_datadir}/carla/resources/zynaddsubfx
 %{_datadir}/carla/resources/*.py
 %{_datadir}/carla/resources/__pycache__
+%attr(755,root,root) %{_datadir}/carla/carla-control
+%attr(755,root,root) %{_datadir}/carla/carla-jack-multi
+%attr(755,root,root) %{_datadir}/carla/carla-jack-single
 %attr(755,root,root) %{_datadir}/carla/resources/bigmeter-ui
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin-patchbay
-%attr(755,root,root) %{_datadir}/carla/resources/midiseq-ui
-%attr(755,root,root) %{_datadir}/carla/resources/nekofilter-ui
+%attr(755,root,root) %{_datadir}/carla/resources/midipattern-ui
 %attr(755,root,root) %{_datadir}/carla/resources/notes-ui
+%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
 %{_datadir}/carla/*.py
 %{_datadir}/carla/__pycache__
 %{_datadir}/carla/carla
@@ -150,8 +146,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/carla/carla-rack
 %{_iconsdir}/hicolor/*/apps/*
 %{_datadir}/mime/packages/carla.xml
+%{py3_sitescriptdir}/carla_*.py
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/carla
 %{_pkgconfigdir}/carla-standalone.pc
+%{_pkgconfigdir}/carla-utils.pc
