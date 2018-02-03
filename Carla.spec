@@ -29,7 +29,7 @@ BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
 BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
-BuildRequires:	python-PyQt5-devel-tools
+BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
 BuildRequires:	python3
 BuildRequires:	python3-PyQt5
 BuildRequires:	python3-PyQt5-uic
