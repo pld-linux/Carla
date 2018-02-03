@@ -30,6 +30,7 @@ BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
 BuildRequires:	python-PyQt5-devel-tools
 BuildRequires:	python3
+BuildRequires:	python3-PyQt5
 BuildRequires:	python3-PyQt5-uic
 BuildRequires:	rpm-pythonprov
 BuildRequires:	zlib-devel
