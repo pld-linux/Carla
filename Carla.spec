@@ -6,7 +6,7 @@
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
@@ -27,6 +27,7 @@ BuildRequires:	gtk+2-devel
 BuildRequires:	gtk+3-devel
 BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
+BuildRequires:	linuxsampler-devel
 BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
 BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
