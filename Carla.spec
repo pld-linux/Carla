@@ -68,6 +68,7 @@ Pliki nagłówkowe biblioteki %{name}.
 
 %build
 %{__make} -j1 \
+	SKIP_STRIPPING=true \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
 	CFLAGS="%{rpmcflags}" \
