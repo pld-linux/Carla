@@ -95,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %py3_comp $RPM_BUILD_ROOT%{_datadir}/carla
 
+# so debuginfo is properly extracted
+chmod a+x $RPM_BUILD_ROOT%{_libdir}/carla/{,*/}*.so
+
 ln -s ../__pycache__ $RPM_BUILD_ROOT%{_datadir}/carla/resources/__pycache__
 
 %clean
