@@ -68,6 +68,7 @@ Pliki nagłówkowe biblioteki %{name}.
 
 %build
 %{__make} -j1 \
+	--trace \
 	SKIP_STRIPPING=true \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
