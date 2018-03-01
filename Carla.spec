@@ -30,10 +30,10 @@ BuildRequires:	libprojectM-devel
 BuildRequires:	linuxsampler-devel
 BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
-BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
 BuildRequires:	python3
 BuildRequires:	python3-PyQt5
-BuildRequires:	python3-PyQt5-uic
+BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
+BuildRequires:	python-PyQt5-uic
 BuildRequires:	rpm-pythonprov
 BuildRequires:	zlib-devel
 Requires:	python3-PyQt5
