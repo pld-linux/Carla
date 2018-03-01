@@ -14,6 +14,7 @@ Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
 Patch0:		pypkgdir.patch
 Patch1:		soundfonts_path.patch
 Patch2:		param_update.patch
+Patch3:		mmap_error.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
 BuildRequires:	Qt5Core-devel
@@ -65,6 +66,7 @@ Pliki nagłówkowe biblioteki %{name}.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__make} -j1 \
