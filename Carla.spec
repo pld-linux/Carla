@@ -3,7 +3,7 @@
 %define	tag	1.9.8
 
 %define	beta	beta6
-%define	rel	4
+%define	rel	5
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0
