@@ -1,9 +1,12 @@
-# git tag is 1.9.8, but release name is 2.0-beta6
-# https://github.com/falkTX/Carla/releases/tag/1.9.8
-%define	tag	1.9.8
+# git tag is 1.9.9, but release name is 2.0-beta7
+# https://github.com/falkTX/Carla/releases/tag/1.9.9
+%define	tag	v1.9.9
 
-%define	beta	beta6
-%define	rel	5
+# current revision of source/native-plugins/external git submodule
+%define plugins_rev  98723d7
+
+%define	beta	beta7
+%define	rel	1
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0
@@ -11,11 +14,11 @@ Release:	0.%{beta}.%{rel}
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
-# Source0-md5:	279acb33716327c82516d6edb8ff6d13
+# Source0-md5:	a583ccc17c12156c985b1b3154f42800
+#Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/Carla-Plugins-%{plugins_rev}.tar.gz
+## Source1-md5:	b8bb65277e724d022b7ed54ead4bc286
 Patch0:		pypkgdir.patch
 Patch1:		soundfonts_path.patch
-Patch2:		param_update.patch
-Patch3:		mmap_error.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
 BuildRequires:	Qt5Core-devel
@@ -62,16 +65,33 @@ Header files for %{name} library.
 Pliki nagłówkowe biblioteki %{name}.
 
 %prep
-%setup -q -n %{name}-%{tag}
+%setup -q -n %{name}-1.9.9
+
+#rmdir source/native-plugins/external
+#mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
-%{__make} -j1 \
+# to make sure all needed features are available
+%{__make} -j1 features \
+	EXTERNAL_PLUGINS=false \
+	SKIP_STRIPPING=true \
+	CC="%{__cc}" \
+	CXX="%{__cxx}" \
+	CFLAGS="%{rpmcflags}" \
+	CXXFLAGS="%{rpmcxxflags}" \
+	LDFLAGS="%{rpmldflags}" \
+	PREFIX=%{_prefix} \
+	PYUIC4=%{_bindir}/pyuic4-3 \
+	PYUIC5=%{_bindir}/pyuic5-3 \
+	PYUIC=%{_bindir}/pyuic5-3 \
+	LIBDIR=%{_libdir}
+
+%{__make} -j1 all \
 	--trace \
+	EXTERNAL_PLUGINS=false \
 	SKIP_STRIPPING=true \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
@@ -141,7 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/carla-control.desktop
 %dir %{_datadir}/carla
 %dir %{_datadir}/carla/resources
-%{_datadir}/carla/resources/zynaddsubfx
+#%{_datadir}/carla/resources/zynaddsubfx
 %{_datadir}/carla/resources/*.py
 %{_datadir}/carla/resources/__pycache__
 %attr(755,root,root) %{_datadir}/carla/carla-control
@@ -152,7 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin-patchbay
 %attr(755,root,root) %{_datadir}/carla/resources/midipattern-ui
 %attr(755,root,root) %{_datadir}/carla/resources/notes-ui
-%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
+#%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
 %{_datadir}/carla/*.py
 %{_datadir}/carla/__pycache__
 %{_datadir}/carla/carla
