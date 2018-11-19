@@ -1,8 +1,8 @@
-diff -dur -x '*~' Carla-1.9.8.orig/source/carla_shared.py Carla-1.9.8/source/carla_shared.py
---- Carla-1.9.8.orig/source/carla_shared.py	2018-01-22 22:05:35.000000000 +0100
-+++ Carla-1.9.8/source/carla_shared.py	2018-02-03 22:59:15.581089609 +0100
-@@ -425,9 +425,11 @@
-     DEFAULT_GIG_PATH    += ":/usr/share/sounds/gig"
+diff -dur Carla-1.9.12.orig/source/frontend/carla_shared.py Carla-1.9.12/source/frontend/carla_shared.py
+--- Carla-1.9.12.orig/source/frontend/carla_shared.py	2018-10-25 11:06:35.000000000 +0200
++++ Carla-1.9.12/source/frontend/carla_shared.py	2018-11-19 12:44:20.000000000 +0100
+@@ -418,9 +418,11 @@
+     DEFAULT_VST2_PATH   += ":/usr/local/lib/vst"
  
      DEFAULT_SF2_PATH     = HOME + "/.sounds/sf2"
 +    DEFAULT_SF2_PATH    += ":/usr/share/soundfonts"

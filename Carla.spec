@@ -1,11 +1,11 @@
-# git tag is 1.9.9, but release name is 2.0-beta7
-# https://github.com/falkTX/Carla/releases/tag/1.9.9
-%define	tag	v1.9.9
+# git tag is 1.9.12, but release name is 2.0-RC2
+# https://github.com/falkTX/Carla/releases/tag/v1.9.12
+%define	tag	v1.9.12
 
 # current revision of source/native-plugins/external git submodule
 %define plugins_rev  98723d7
 
-%define	beta	beta7
+%define	beta	rc2
 %define	rel	1
 Summary:	Audio plugin host
 Name:		Carla
@@ -14,9 +14,9 @@ Release:	0.%{beta}.%{rel}
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
-# Source0-md5:	a583ccc17c12156c985b1b3154f42800
-#Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/Carla-Plugins-%{plugins_rev}.tar.gz
-## Source1-md5:	b8bb65277e724d022b7ed54ead4bc286
+# Source0-md5:	11b75d313629dbf20f71e9e36ba8a0c0
+Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/Carla-Plugins-%{plugins_rev}.tar.gz
+# Source1-md5:	b8bb65277e724d022b7ed54ead4bc286
 Patch0:		pypkgdir.patch
 Patch1:		soundfonts_path.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
@@ -28,12 +28,11 @@ BuildRequires:	QtGui-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	fftw3-devel
 BuildRequires:	fltk-devel
-BuildRequires:	fluidsynth-devel
+BuildRequires:	fluidsynth-devel >= 2.0.0
 BuildRequires:	gtk+2-devel
 BuildRequires:	gtk+3-devel
 BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
-BuildRequires:	linuxsampler-devel
 BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
 BuildRequires:	python3
@@ -65,18 +64,18 @@ Header files for %{name} library.
 Pliki nagłówkowe biblioteki %{name}.
 
 %prep
-%setup -q -n %{name}-1.9.9
+%setup -q -n %{name}-1.9.12 -a 1
 
-#rmdir source/native-plugins/external
-#mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
+rmdir source/native-plugins/external
+mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 
 %build
 # to make sure all needed features are available
 %{__make} -j1 features \
-	EXTERNAL_PLUGINS=false \
+	EXTERNAL_PLUGINS=true \
 	SKIP_STRIPPING=true \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
@@ -91,7 +90,7 @@ Pliki nagłówkowe biblioteki %{name}.
 
 %{__make} -j1 all \
 	--trace \
-	EXTERNAL_PLUGINS=false \
+	EXTERNAL_PLUGINS=true \
 	SKIP_STRIPPING=true \
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
@@ -161,7 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/carla-control.desktop
 %dir %{_datadir}/carla
 %dir %{_datadir}/carla/resources
-#%{_datadir}/carla/resources/zynaddsubfx
+%{_datadir}/carla/resources/widgets
+%{_datadir}/carla/resources/zynaddsubfx
 %{_datadir}/carla/resources/*.py
 %{_datadir}/carla/resources/__pycache__
 %attr(755,root,root) %{_datadir}/carla/carla-control
@@ -172,7 +172,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin-patchbay
 %attr(755,root,root) %{_datadir}/carla/resources/midipattern-ui
 %attr(755,root,root) %{_datadir}/carla/resources/notes-ui
-#%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
+%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
+%{_datadir}/carla/widgets
 %{_datadir}/carla/*.py
 %{_datadir}/carla/__pycache__
 %{_datadir}/carla/carla
@@ -180,10 +181,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/carla/carla-rack
 %{_iconsdir}/hicolor/*/apps/*
 %{_datadir}/mime/packages/carla.xml
-%{py3_sitescriptdir}/carla_*.py
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/carla
+%{_pkgconfigdir}/carla-native-plugin.pc
 %{_pkgconfigdir}/carla-standalone.pc
 %{_pkgconfigdir}/carla-utils.pc
