@@ -6,7 +6,7 @@
 %define plugins_rev  98723d7
 
 %define	beta	rc2
-%define	rel	1
+%define	rel	2
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0
@@ -56,6 +56,7 @@ audio drivers and plugin formats.
 Summary:	Header files for %{name} library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki %{name}
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files for %{name} library.
