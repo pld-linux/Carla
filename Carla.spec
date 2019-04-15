@@ -1,22 +1,20 @@
-# git tag is 1.9.12, but release name is 2.0-RC2
-# https://github.com/falkTX/Carla/releases/tag/v1.9.12
-%define	tag	v1.9.12
+#
+# Conditional build:
+%bcond_with	zynaddsubfx		# build with built-in ZynAddSubFx synth
 
 # current revision of source/native-plugins/external git submodule
-%define plugins_rev  98723d7
+%define plugins_rev   859bc98
 
-%define	beta	rc2
-%define	rel	3
 Summary:	Audio plugin host
 Name:		Carla
-Version:	2.0
-Release:	0.%{beta}.%{rel}
+Version:	2.0.0
+Release:	1
 License:	GPL v2+
 Group:		Applications
-Source0:	https://github.com/falkTX/Carla/archive/%{tag}/%{name}-%{tag}.tar.gz
-# Source0-md5:	11b75d313629dbf20f71e9e36ba8a0c0
+Source0:	https://github.com/falkTX/Carla/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	48fb7b0b8ee2e451798767ae779e8483
 Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/Carla-Plugins-%{plugins_rev}.tar.gz
-# Source1-md5:	b8bb65277e724d022b7ed54ead4bc286
+# Source1-md5:	d1f05c048b8c813d7768ef40fc9badaa
 Patch0:		pypkgdir.patch
 Patch1:		soundfonts_path.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
@@ -66,7 +64,7 @@ Header files for %{name} library.
 Pliki nagłówkowe biblioteki %{name}.
 
 %prep
-%setup -q -n %{name}-1.9.12 -a 1
+%setup -q -n %{name}-%{version} -a 1
 
 rmdir source/native-plugins/external
 mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
@@ -79,6 +77,10 @@ mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 %{__make} -j1 features \
 	EXTERNAL_PLUGINS=true \
 	SKIP_STRIPPING=true \
+%if %{without zynaddsubfx}
+	SKIP_ZYN_SYNTH=true \
+	HAVE_ZYN_DEPS=false \
+%endif
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
 	CFLAGS="%{rpmcflags}" \
@@ -94,6 +96,10 @@ mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 	--trace \
 	EXTERNAL_PLUGINS=true \
 	SKIP_STRIPPING=true \
+%if %{without zynaddsubfx}
+	SKIP_ZYN_SYNTH=true \
+	HAVE_ZYN_DEPS=false \
+%endif
 	CC="%{__cc}" \
 	CXX="%{__cxx}" \
 	CFLAGS="%{rpmcflags}" \
@@ -109,6 +115,10 @@ mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
+%if %{without zynaddsubfx}
+	SKIP_ZYN_SYNTH=true \
+	HAVE_ZYN_DEPS=false \
+%endif
 	PREFIX=%{_prefix} \
 	LIBDIR=%{_libdir} \
 	PYPKGDIR=%{py3_sitescriptdir} \
@@ -163,7 +173,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/carla
 %dir %{_datadir}/carla/resources
 %{_datadir}/carla/resources/widgets
-%{_datadir}/carla/resources/zynaddsubfx
+%{?with_zynaddsubfx:%{_datadir}/carla/resources/zynaddsubfx}
 %{_datadir}/carla/resources/*.py
 %{_datadir}/carla/resources/__pycache__
 %attr(755,root,root) %{_datadir}/carla/carla-control
@@ -174,7 +184,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin-patchbay
 %attr(755,root,root) %{_datadir}/carla/resources/midipattern-ui
 %attr(755,root,root) %{_datadir}/carla/resources/notes-ui
-%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui
+%{?with_zynaddsubfx:%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui}
 %{_datadir}/carla/widgets
 %{_datadir}/carla/*.py
 %{_datadir}/carla/__pycache__
