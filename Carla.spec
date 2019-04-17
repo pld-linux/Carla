@@ -1,6 +1,7 @@
 #
 # Conditional build:
 %bcond_with	zynaddsubfx		# build with built-in ZynAddSubFx synth
+%bcond_with	qt4			# Qt4 plugin wrapper
 
 # current revision of source/native-plugins/external git submodule
 %define plugins_rev   859bc98
@@ -21,8 +22,10 @@ URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
 BuildRequires:	Qt5Core-devel
 BuildRequires:	Qt5Gui-devel
+%if %{with qt4}
 BuildRequires:	QtCore-devel
 BuildRequires:	QtGui-devel
+%endif
 BuildRequires:	alsa-lib-devel
 BuildRequires:	fftw3-devel
 BuildRequires:	fltk-devel
