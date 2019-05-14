@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_with	zynaddsubfx		# build with built-in ZynAddSubFx synth
-%bcond_with	qt4			# Qt4 plugin wrapper
+%bcond_without	qt4			# Qt4 plugin wrapper
 
 # current revision of source/native-plugins/external git submodule
 %define plugins_rev   859bc98
@@ -9,7 +9,7 @@
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.0.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/v%{version}/%{name}-%{version}.tar.gz
