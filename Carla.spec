@@ -4,19 +4,18 @@
 %bcond_without	qt4			# Qt4 plugin wrapper
 
 # current revision of source/native-plugins/external git submodule
-%define plugins_rev   859bc98
+%define plugins_rev   385f1fd
 
 Summary:	Audio plugin host
 Name:		Carla
-Version:	2.0.0
-Release:	2
+Version:	2.4.1
+Release:	1
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	48fb7b0b8ee2e451798767ae779e8483
-Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/Carla-Plugins-%{plugins_rev}.tar.gz
-# Source1-md5:	d1f05c048b8c813d7768ef40fc9badaa
-Patch0:		pypkgdir.patch
+# Source0-md5:	c7d9daae2ca3d7d2b58aaeb63dc385fe
+Source1:	https://github.com/falkTX/Carla-Plugins/archive/%{plugins_rev}/%{name}-Plugins-%{plugins_rev}.tar.gz
+# Source1-md5:	776e4052a6cc33d85b4cb082665b5e2c
 Patch1:		soundfonts_path.patch
 URL:		http://kxstudio.linuxaudio.org/Applications:Carla
 BuildRequires:	Mesa-libGL-devel
@@ -36,11 +35,11 @@ BuildRequires:	liblo-devel
 BuildRequires:	libprojectM-devel
 BuildRequires:	mxml-devel
 BuildRequires:	pulseaudio-devel
+BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
+BuildRequires:	python-PyQt5-uic
 BuildRequires:	python3
 BuildRequires:	python3-PyQt5
 BuildRequires:	python3-PyQt5-uic
-BuildRequires:	python-PyQt5-devel-tools >= 5.8.2-2
-BuildRequires:	python-PyQt5-uic
 BuildRequires:	rpm-pythonprov
 BuildRequires:	zlib-devel
 Requires:	python3-PyQt5
@@ -67,12 +66,11 @@ Header files for %{name} library.
 Pliki nagłówkowe biblioteki %{name}.
 
 %prep
-%setup -q -n %{name}-%{version} -a 1
+%setup -q -a 1
 
 rmdir source/native-plugins/external
 mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 
-#%patch0 -p1
 %patch1 -p1
 
 %build
@@ -128,8 +126,8 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__sed} -i -e '1s,^#!.*python3\?,#!%{__python3},' \
-	$RPM_BUILD_ROOT/%{_datadir}/carla/resources/*-* \
-	$RPM_BUILD_ROOT/%{_bindir}/*
+	$RPM_BUILD_ROOT%{_datadir}/carla/resources/*-* \
+	$RPM_BUILD_ROOT%{_bindir}/*
 
 %py3_comp $RPM_BUILD_ROOT%{_datadir}/carla
 
@@ -173,8 +171,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/vst/carla.vst/styles
 %{_desktopdir}/carla.desktop
 %{_desktopdir}/carla-control.desktop
+%{_desktopdir}/carla-jack-multi.desktop
+%{_desktopdir}/carla-jack-single.desktop
+%{_desktopdir}/carla-patchbay.desktop
+%{_desktopdir}/carla-rack.desktop
 %dir %{_datadir}/carla
+%dir %{_datadir}/carla/modgui
+%{_datadir}/carla/modgui/*.py
+%{_datadir}/carla/modgui/__pycache__
+%dir %{_datadir}/carla/patchcanvas
+%{_datadir}/carla/patchcanvas/*.py
+%{_datadir}/carla/patchcanvas/__pycache__
 %dir %{_datadir}/carla/resources
+%{_datadir}/carla/resources/modgui
+%{_datadir}/carla/resources/patchcanvas
 %{_datadir}/carla/resources/widgets
 %{?with_zynaddsubfx:%{_datadir}/carla/resources/zynaddsubfx}
 %{_datadir}/carla/resources/*.py
@@ -187,6 +197,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_datadir}/carla/resources/carla-plugin-patchbay
 %attr(755,root,root) %{_datadir}/carla/resources/midipattern-ui
 %attr(755,root,root) %{_datadir}/carla/resources/notes-ui
+%attr(755,root,root) %{_datadir}/carla/resources/xycontroller-ui
 %{?with_zynaddsubfx:%attr(755,root,root) %{_datadir}/carla/resources/zynaddsubfx-ui}
 %{_datadir}/carla/widgets
 %{_datadir}/carla/*.py
@@ -200,6 +211,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/carla
+%{_pkgconfigdir}/carla-host-plugin.pc
 %{_pkgconfigdir}/carla-native-plugin.pc
 %{_pkgconfigdir}/carla-standalone.pc
 %{_pkgconfigdir}/carla-utils.pc

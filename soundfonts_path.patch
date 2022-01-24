@@ -1,12 +1,8 @@
 diff -dur Carla-1.9.12.orig/source/frontend/carla_shared.py Carla-1.9.12/source/frontend/carla_shared.py
 --- Carla-1.9.12.orig/source/frontend/carla_shared.py	2018-10-25 11:06:35.000000000 +0200
 +++ Carla-1.9.12/source/frontend/carla_shared.py	2018-11-19 12:44:20.000000000 +0100
-@@ -418,9 +418,11 @@
-     DEFAULT_VST2_PATH   += ":/usr/local/lib/vst"
- 
-     DEFAULT_SF2_PATH     = HOME + "/.sounds/sf2"
-+    DEFAULT_SF2_PATH    += ":/usr/share/soundfonts"
-     DEFAULT_SF2_PATH    += ":/usr/share/sounds/sf2"
+@@ -418,6 +418,7 @@
+     DEFAULT_SF2_PATH    += ":/usr/share/soundfonts"
  
      DEFAULT_SFZ_PATH     = HOME + "/.sounds/sfz"
 +    DEFAULT_SFZ_PATH    += ":/usr/share/soundfonts"
