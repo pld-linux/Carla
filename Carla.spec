@@ -71,7 +71,7 @@ Pliki nagłówkowe biblioteki %{name}.
 rmdir source/native-plugins/external
 mv Carla-Plugins-%{plugins_rev}* source/native-plugins/external
 
-%patch1 -p1
+%patch -P1 -p1
 
 %build
 # to make sure all needed features are available
