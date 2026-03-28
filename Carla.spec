@@ -9,7 +9,7 @@
 Summary:	Audio plugin host
 Name:		Carla
 Version:	2.4.1
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Applications
 Source0:	https://github.com/falkTX/Carla/archive/v%{version}/%{name}-%{version}.tar.gz
